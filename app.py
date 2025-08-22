@@ -18,7 +18,7 @@ st.sidebar.title("Settings")
 @st.cache_data
 def load_data():
     df = pd.read_csv("CC GENERAL.csv")
-    df.fillna(df.mean(), inplace=True)
+   df.fillna(df.select_dtypes(include="number").mean(), inplace=True)
     return df
 
 df = load_data()
@@ -96,3 +96,4 @@ st.pyplot(fig2)
 st.subheader("Explore a Cluster")
 selected_cluster = st.selectbox("Choose a Cluster", df["Cluster"].unique())
 st.write(df[df["Cluster"] == selected_cluster].head())
+
