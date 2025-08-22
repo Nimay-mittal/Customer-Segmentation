@@ -83,18 +83,25 @@ st.pyplot(fig)
 
 # --- Cluster Profiles
 st.subheader("Cluster Profiles (Mean Feature Values)")
-cluster_summary = df.groupby("Cluster").mean().T
+cluster_summary = df.groupby("Cluster")[df.select_dtypes(include="number").columns].mean().T
 st.dataframe(cluster_summary)
 
 # --- Heatmap
 st.subheader("Cluster Feature Comparison")
+
+# Ensure only numeric cluster summary is used
+numeric_summary = df.groupby("Cluster")[df.select_dtypes(include="number").columns].mean().T
+normalized = (numeric_summary - numeric_summary.min()) / (numeric_summary.max() - numeric_summary.min())
+
 fig2, ax2 = plt.subplots(figsize=(12,6))
-sns.heatmap(cluster_summary, cmap="coolwarm", annot=True, ax=ax2)
+sns.heatmap(normalized, cmap="coolwarm", annot=False, ax=ax2)
 st.pyplot(fig2)
+
 
 # --- Explore Individual Cluster
 st.subheader("Explore a Cluster")
 selected_cluster = st.selectbox("Choose a Cluster", df["Cluster"].unique())
 st.write(df[df["Cluster"] == selected_cluster].head())
+
 
 
