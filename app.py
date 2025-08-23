@@ -18,7 +18,8 @@ st.sidebar.title("Settings")
 @st.cache_data
 def load_data():
     df = pd.read_csv("CC GENERAL.csv")
-    df.fillna(df.select_dtypes(include="number").mean(), inplace=True)
+    df.loc[(df['MINIMUM_PAYMENTS'].isnull()==True),'MINIMUM_PAYMENTS'] = df['MINIMUM_PAYMENTS'].median()
+    df.loc[(df['CREDIT_LIMIT'].isnull()==True),'CREDIT_LIMIT'] = df['CREDIT_LIMIT'].median()
     return df
 
 df = load_data()
@@ -36,6 +37,7 @@ n_clusters = st.sidebar.slider("Number of Clusters", 2, 10, 4)
 X = df.drop("CUST_ID", axis=1, errors="ignore")
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
+data_imputed= pd.DataFrame(X_scaled, columns= X.columns)
 
 # ---------------------------
 # Clustering
@@ -102,6 +104,7 @@ st.pyplot(fig2)
 st.subheader("Explore a Cluster")
 selected_cluster = st.selectbox("Choose a Cluster", df["Cluster"].unique())
 st.write(df[df["Cluster"] == selected_cluster].head())
+
 
 
 
