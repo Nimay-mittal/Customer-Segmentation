@@ -38,13 +38,15 @@ X = df.drop("CUST_ID", axis=1, errors="ignore")
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 data_imputed= pd.DataFrame(X_scaled, columns= X.columns)
+best_cols = ["BALANCE", "PURCHASES", "CASH_ADVANCE", "CREDIT_LIMIT", "PAYMENTS", "MINIMUM_PAYMENTS"]
+data_final = pd.DataFrame(data_imputed[best_cols])
 
 # ---------------------------
 # Clustering
 # ---------------------------
 if algo_choice == "KMeans":
-    model = KMeans(n_clusters=n_clusters, random_state=42)
-    df["Cluster"] = model.fit_predict(X_scaled)
+    model = KMeans(n_clusters=n_clusters)
+    df["Cluster"] = model.fit_predict(data_final)
 
 elif algo_choice == "Agglomerative":
     model = AgglomerativeClustering(n_clusters=n_clusters)
@@ -104,6 +106,7 @@ st.pyplot(fig2)
 st.subheader("Explore a Cluster")
 selected_cluster = st.selectbox("Choose a Cluster", df["Cluster"].unique())
 st.write(df[df["Cluster"] == selected_cluster].head())
+
 
 
 
