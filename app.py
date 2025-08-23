@@ -105,7 +105,8 @@ st.pyplot(fig2)
 # --- Explore Individual Cluster
 st.subheader("Explore a Cluster")
 selected_cluster = st.selectbox("Choose a Cluster", df["Cluster"].unique())
-st.write(df[df["Cluster"] == selected_cluster].head())
+st.write(df[df["Cluster"] == selected_cluster].info())
+
 
 
 
