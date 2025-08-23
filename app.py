@@ -60,7 +60,7 @@ else:  # Gaussian Mixture
 # PCA for visualization
 # ---------------------------
 pca = PCA(2)
-pca_data = pca.fit_transform(X_scaled)
+pca_data = pca.fit_transform(data_imputed)
 df["PCA1"] = pca_data[:,0]
 df["PCA2"] = pca_data[:,1]
 
@@ -106,6 +106,7 @@ st.pyplot(fig2)
 st.subheader("Explore a Cluster")
 selected_cluster = st.selectbox("Choose a Cluster", df["Cluster"].unique())
 st.write(df[df["Cluster"] == selected_cluster].head())
+
 
 
 
