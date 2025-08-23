@@ -50,11 +50,11 @@ if algo_choice == "KMeans":
 
 elif algo_choice == "Agglomerative":
     model = AgglomerativeClustering(n_clusters=n_clusters)
-    df["Cluster"] = model.fit_predict(X_scaled)
+    df["Cluster"] = model.fit_predict(data_final)
 
 else:  # Gaussian Mixture
     model = GaussianMixture(n_components=n_clusters, random_state=42)
-    df["Cluster"] = model.fit_predict(X_scaled)
+    df["Cluster"] = model.fit_predict(data_final)
 
 # ---------------------------
 # PCA for visualization
@@ -80,10 +80,26 @@ st.subheader("Cluster Distribution")
 st.bar_chart(df["Cluster"].value_counts())
 
 # --- PCA 2D Plot
-st.subheader("Customer Segments (2D PCA Projection)")
-fig, ax = plt.subplots(figsize=(8,6))
-sns.scatterplot(data=df, x="PCA1", y="PCA2", hue="Cluster", palette="Set2", ax=ax)
-st.pyplot(fig)
+#st.subheader("Customer Segments (2D PCA Projection)")
+#fig, ax = plt.subplots(figsize=(8,6))
+#sns.scatterplot(data=df, x="PCA1", y="PCA2", hue="Cluster", palette="Set2", ax=ax)
+#st.pyplot(fig)
+
+data_p = pd.DataFrame(PCA(n_components = 2).fit_transform(data_imputed))
+preds = pd.Series(KMeans(n_clusters = 6,).fit_predict(data_p))
+data_p = pd.concat([data_p, preds], axis =1)
+data_p.columns = [0,1,'target']
+
+plt.scatter(data_p[data_p['target']==0].iloc[:,0], data_p[data_p.target==0].iloc[:,1], c = colors[0], label = 'cluster 1')
+plt.scatter(data_p[data_p['target']==1].iloc[:,0], data_p[data_p.target==1].iloc[:,1], c = colors[1], label = 'cluster 2')
+plt.scatter(data_p[data_p['target']==2].iloc[:,0], data_p[data_p.target==2].iloc[:,1], c = colors[2], label = 'cluster 3')
+plt.scatter(data_p[data_p['target']==3].iloc[:,0], data_p[data_p.target==3].iloc[:,1], c = colors[3], label = 'cluster 4')
+plt.scatter(data_p[data_p['target']==4].iloc[:,0], data_p[data_p.target==4].iloc[:,1], c = colors[4], label = 'cluster 5')
+plt.scatter(data_p[data_p['target']==5].iloc[:,0], data_p[data_p.target==5].iloc[:,1], c = colors[5], label = 'cluster 6')
+plt.legend()
+plt.title('KMeans Clustering with 6 Clusters')
+plt.xlabel('PC1')
+plt.ylabel('PC2')
 
 # --- Cluster Profiles
 st.subheader("Cluster Profiles (Mean Feature Values)")
@@ -106,6 +122,7 @@ st.pyplot(fig2)
 st.subheader("Explore a Cluster")
 selected_cluster = st.selectbox("Choose a Cluster", df["Cluster"].unique())
 st.write(df[df["Cluster"] == selected_cluster].head())
+
 
 
 
