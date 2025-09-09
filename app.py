@@ -109,14 +109,6 @@ st.subheader("Explore a Cluster")
 selected_cluster = st.selectbox("Choose a Cluster", df["Cluster"].unique())
 st.write(df[df["Cluster"] == selected_cluster].describe())
 
-# --- Feature vs Cluster Boxplots
-st.subheader("Feature Distributions by Cluster")
-plot_df = data_final.copy()
-plot_df["Cluster"] = df["Cluster"]
 
-for feature in ["PURCHASES", "PAYMENTS", "CREDIT_LIMIT"]:
-    fig, ax = plt.subplots(figsize=(8, 5))
-    sns.boxplot(data=plot_df, x="Cluster", y=feature, palette="Set2", ax=ax)
-    ax.set_title(f"{feature} by Cluster")
-    st.pyplot(fig)
+
 
